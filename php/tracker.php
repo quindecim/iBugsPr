@@ -1,36 +1,64 @@
 <?php 
 
-	function set_track() {
-		$q = 'SELECT * FROM tracking WHERE track_prnum1 = ' . $_SESSION['pr1'] . ' AND track_prnum2 = ' . $_SESSION['pr2'];
-		$r = pg_query($dbconn, $q);
+	$q = 'SELECT track_office, track_status FROM tracking WHERE track_prnum1 = ' . $_SESSION['pr1'] . ' AND track_prnum2 = ' . $_SESSION['pr2'];
+	$r = pg_query($dbconn, $q);
+	if(!$r) {
+		$errormessage = pg_last_error();
+		echo "Error with query: ". $errormessage;
+		exit();
+	}else {
 		$row = pg_fetch_array($r, 0);
-		$_SESSION['curr_ofc'] = $row[1];
-		$_SESSION['curr_stat'] = $row[3];
-	}
+		$_SESSION['curr_ofc'] = $row[0];
+		$_SESSION['curr_stat'] = $row[1];
 
-	function pr_status($offc_num, $offc_ordr) {
-		$status = 'Pending';
-		$ctr = 0;
-
-		while ($offc_ordr < 5) {
-			if($offc_num == $_SESSION['curr_ofc'] && $_SESSION['flag']) {
-				$status = $_SESSION['curr_stat'];
-				$_SESSION['flag'] = False;
-				break;
-			}else {
-				if($_SESSION['flag']) {
-					$status = 'Approved';
-				}else {
-					break;
-				}
-			$x++;
+		if($_SESSION['curr_ofc'] < 20) {
+			$_SESSION['curr_ord'] = 1;
+		}else if($_SESSION['curr_ofc'] == 21) {
+			$_SESSION['curr_ord'] = 3;
+		}else if($_SESSION['curr_ofc'] == 22) {
+			$_SESSION['curr_ord'] = 4;
+		}else if($_SESSION['curr_ofc'] == 23) {
+			$_SESSION['curr_ord'] = 5;
+		}else {
+			$_SESSION['curr_ord'] = 2;
 		}
 
-		echo  $status;
+	}
+
+	function pr_status($ofc, $ord) {
+		$status = 'Pending';
+
+		if($_SESSION['curr_stat'] == 'Declined' && !$_SESSION['flage'] ) {
+			$status = '';
+		}
+
+		if($ofc == $_SESSION['curr_ofc'] && $_SESSION['flag']) {
+			$status = $_SESSION['curr_stat'];
+			$_SESSION['flag'] = False;
+			$_SESSION['curr_ord'] = $ord;
+		}else {
+			if($_SESSION['flag']) {
+				$status = 'Approved';
+			}
+		}
+
+		echo $status;
 	}
 
 	function pr_color($n) {
 		$color = 'active';
+
+		if($n < $_SESSION['curr_ord']) {
+			$color = 'success';
+		}else if($n == $_SESSION['curr_ord']) {
+			if($_SESSION['curr_stat'] == 'In Progress') {
+				$color = 'info';
+			}else if($_SESSION['curr_stat'] == 'On Hold') {
+				$color = 'warning';
+			}else if($_SESSION['curr_stat'] == 'Declined') {
+				$color = 'danger';
+			}
+		}
 		
 
 		echo $color;

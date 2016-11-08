@@ -1,49 +1,40 @@
 <?php
+	echo '
+		<div class="navbar-collapse collapse">
+			<ul class="nav navbar-nav pull-right">
+				<li class="active"><a href="home.php">Home</a></li>';
 
 	if(!empty(isset($_SESSION['user']))) {
-		echo '<ul class="nav navbar-nav">
-				<li class="active"><a href="Home.html">Home<span class="sr-only">(current)</span></a> </li>
-				<li><a href="PR_Input_1.php">Generate</a> </li>
-				<li><a href="track_tbl.php">Track PR</a> </li>
-			  </ul>';
+		echo	'<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"> Purchase Request <b class="caret"></b></a>
+					<ul class="dropdown-menu">';
+						if($_SESSION['user_type'] == 'clerk') {
+							echo '<li><a href="track_tbl1.php">View Status</a></li>';
+						}else {
+							echo '<li><a href="track_tbl2.php">View Pending PRs</a></li>';
+						}
+				echo	'<li class="active"><a href="PR_Form1_Input.php">Create New PR</a></li>
+						<li class="active"><a href="sidebar-right.php">Search PR</a></li>
+					</ul>
+				</li>';
 	}
 
 	echo '
-  		<!--start: user dropdown-->
-		<ul class="nav navbar-nav navbar-right hidden-sm">
-		<li> </li>
-			<li class="dropdown">';
+				<li><a href="contact.php">Contact</a></li>';
 
-				if(!isset($_SESSION['user']) || empty($_SESSION['user'])) {
-					echo '<a href="login.php">Login</a>';
-			    }else {
-			    	echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">' . $_SESSION['username'] . '<span class="caret"></span></a>';
-			    }
-
-            if(!empty(isset($_SESSION['user']))) {
-              echo '<ul class="dropdown-menu" role="menu">
-						<li><a href="login.html">Account Settings</a></li>
-						<li><a href="../php/logout.php">Logout</a></li>
-					</ul>';
-            }
-
-    echo 	'</li>
-		</ul>
-		<!--end : user dropdown-->';
-
-	if(!empty(isset($_SESSION['user']))) {
-		echo '<ul class="nav navbar-nav navbar-right hidden-sm">
-			<li> </li>
-				<li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"> Notifications <span class="caret"></span></a>
-		        	<ul class="dropdown-menu" role="menu">
-						<li><a href="#">Notif</a> </li>
-						<li><a href="#">Another Notif</a> </li>
-						<li><a href="#">More Notifs</a> </li>
-						<li class="divider"></li>
-						<li><a href="#">See all Notifs</a> </li>
+	if(!isset($_SESSION['user']) || empty($_SESSION['user'])) {
+		echo	'<li><a class="btn" href="signin.php">SIGN IN </a></li>';
+	}else {
+		echo 	'<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown">' . $_SESSION['username'] . '<b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li class="active"><a href="sidebar-right.php">Account Settings</a></li>
+						<li class="active"><a href="php/logout.php">Logout</a></li>
 					</ul>
-				</li>
-			</ul>';
+				</li>';
 	}
+	
+	echo	'</ul>
+		</div>';
 
 ?>

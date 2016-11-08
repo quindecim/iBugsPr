@@ -1,35 +1,43 @@
 <?php
-	require '../php/startsess.php';
-	require '../php/connectdb.php';
+	require 'php/startsess.php';
+	require 'php/connectdb.php';
 
 	if($_POST['edit']){
-		header ('Location: ../HTML/PR_Form1_Edit.php');
+		header ('Location: PR_Form1_Edit.php');
 	}else if($_POST['next']){
-		header ('Location: ../HTML/PR_Input_2.php');
+		header ('Location: PR_Input_2.php');
 	}else if($_POST['cancelpr']){
-		header ('Location: ../HTML/PR_Form1_Display.php');
+		header ('Location: PR_Form1_Display.php');
 	}
-	
+
+	$coffice = $_POST['cluster'];
+	$pr_coffice = pg_query($dbconn, "SELECT office_num FROM office WHERE office_name = '$coffice'"); 
+	$off1_array = pg_fetch_array($pr_coffice);
+	$pr_cluster = $off1_array[0];
 	$pr_number1 = $_SESSION['pr1'];	
-	$rcenter = $_POST['rscode'];
-	$pr_rcenter = pg_query($dbconn, "SELECT re_code FROM rescenter WHERE re_title = '$rcenter'");
-	$rc_array = pg_fetch_array($pr_rcenter);
-	$pr_rccode = $rc_array[0];
 	$pr_name = $_POST['name'];
 	$pr_date = $_SESSION['date'];
 	$pr_purpose = $_POST['purpose'];
-	
 
-	$coffice = $_POST['cluster'];
-	$pr_coffice = pg_query($dbconn, "SELECT office_num FROM office WHERE office_name = '$coffice'");
-	$off1_array = pg_fetch_array($pr_coffice);
-	$pr_cluster = $off1_array[0];
-	$pr_status = "proceeding";
+	$rcenter = $_POST['rscode'];
+	if($rcenter == NULL){
+		$rcnull = TRUE;
+	} else {
+		$rcnull = FALSE;
+		$pr_rcenter = pg_query($dbconn, "SELECT re_code FROM rescenter WHERE re_title = '$rcenter'"); // NOT REQUIRED
+		$rc_array = pg_fetch_array($pr_rcenter);
+		$pr_rccode = $rc_array[0];
+	}
 	
 	$ooffice = $_POST['office'];
-	$pr_ooffice = pg_query($dbconn, "SELECT office_num FROM office WHERE office_name = '$ooffice'");
-	$off2_array = pg_fetch_array($pr_ooffice);
-	$pr_office = $off2_array[0];
+	if($ooffice == NULL){
+		$ofnull = TRUE;
+	} else {
+		$ofnull = FALSE;
+		$pr_ooffice = pg_query($dbconn, "SELECT office_num FROM office WHERE office_name = '$ooffice'"); //NOT REQUIRED
+		$off2_array = pg_fetch_array($pr_ooffice);
+		$pr_office = $off2_array[0];
+	}
 
 	//items
 	$stock = $_POST['stock'];
@@ -41,7 +49,16 @@
 
 	//store into db	
 	if(isset($_POST['newpr'])) {
-		//query for purchase entity		
+		//query for purchase entity	
+		if($rcnull && $ofnull)
+			$query1 = "INSERT INTO purchase (pr_number1, pr_name, pr_date, pr_purpose, pr_cluster) VALUES ($pr_number1, '$pr_name', '$pr_date', '$pr_purpose', $pr_cluster)";
+		else if($rcnull)
+			$query1 = "INSERT INTO purchase (pr_number1, pr_name, pr_date, pr_purpose, pr_cluster, pr_office) VALUES ($pr_number1, '$pr_name', '$pr_date', '$pr_purpose', $pr_cluster, $pr_office)";
+		else if($ofnull)
+			$query1 = "INSERT INTO purchase (pr_number1, pr_rcencode, pr_name, pr_date, pr_purpose, pr_cluster) VALUES ($pr_number1, $pr_rccode, '$pr_name', '$pr_date', '$pr_purpose', $pr_cluster)";
+		else
+			$query1 = "INSERT INTO purchase VALUES($pr_number1, $pr_rccode, '$pr_name', '$pr_date', '$pr_purpose', $pr_cluster, '$pr_status', $pr_office)";
+
 		$check = pg_query($dbconn, "SELECT count(*) FROM purchase where pr_number1 = $pr_number1");
 		$check_arr = pg_fetch_array($check);
 		$check_cnt = $check_arr[0];
@@ -50,19 +67,26 @@
 			pg_query($dbconn, "ALTER SEQUENCE item_item_number_seq RESTART WITH 1;");
 		}
 
-		$query1 = "INSERT INTO purchase VALUES($pr_number1, $pr_rccode, '$pr_name', '$pr_date', '$pr_purpose', $pr_cluster, '$pr_status', $pr_office)";
 		$result1 = pg_query($dbconn, $query1);
+		$p1 = $_SESSION['pr1'];
+		$p2 = $_SESSION['pr2'];
 
-		foreach($stock as $key => $value) {
-			$query2 = "INSERT INTO item VALUES($value," . $_SESSION['pr1'] . ", '$unit[$key]', '$desc[$key]', $qty[$key], $ucost[$key], $tcost[$key], " . $_SESSION['pr2'] . ")";
+		foreach($stock as $key => $value) {	
+			if($value != NULL && $unit[$key] != NULL && $desc[$key] != NULL && $qty[$key] != NULL &&  $ucost[$key] != NULL && $tcost[$key] != NULL){
+				echo $value;
+				$query2 = "INSERT INTO item VALUES($value," . $_SESSION['pr1'] . ", '$unit[$key]', '$desc[$key]', $qty[$key], $ucost[$key], $tcost[$key], " . $_SESSION['pr2'] . ")";
+			} else if($value == NULL) {
+				$query2 = "INSERT INTO item (item_prnum1, item_uoissue, item_description, item_quantity, item_eunicost, item_etotcost, item_prnum2) VALUES(" . $_SESSION['pr1'] . ", '$unit[$key]', '$desc[$key]', $qty[$key], $ucost[$key], $tcost[$key], " . $_SESSION['pr2'] . ")";
+			} else {
+				break;
+			}
 
 			$result2 = pg_query($dbconn, $query2);
-
 			if(!$result2) {
 				$errormessage = pg_last_error();
 				echo "Error with query 2: ". $errormessage;
 				exit();
-			}
+			} 
 		}
 
 		if(!$result1) {
@@ -146,7 +170,15 @@
 		}
 
 		//update purchase
-		$query6 = "UPDATE purchase SET (pr_rcencode, pr_name, pr_purpose, pr_cluster, pr_office) = ('$pr_rccode', '$pr_name', '$pr_purpose', $pr_cluster, $pr_office) where pr_number1 = " . $_SESSION[pr1] . "AND pr_number2 = " . $_SESSION[pr2];
+		if($rcnull && $ofnull)
+			$query6 = "UPDATE purchase SET (pr_number1, pr_name, pr_date, pr_purpose, pr_cluster) = ($pr_number1, '$pr_name', '$pr_date', '$pr_purpose', $pr_cluster) where pr_number1 = " . $_SESSION[pr1] . "AND pr_number2 = " . $_SESSION[pr2];
+		else if($rcnull)
+			$query6 = "UPDATE purchase SET (pr_number1, pr_name, pr_date, pr_purpose, pr_cluster, pr_office) = ($pr_number1, '$pr_name', '$pr_date', '$pr_purpose', $pr_cluster, $pr_office) where pr_number1 = " . $_SESSION[pr1] . "AND pr_number2 = " . $_SESSION[pr2];
+		else if($ofnull)
+			$query6 = "UPDATE purchase SET (pr_number1, pr_rcencode, pr_name, pr_date, pr_purpose, pr_cluster) = ($pr_number1, $pr_rccode, '$pr_name', '$pr_date', '$pr_purpose', $pr_cluster) where pr_number1 = " . $_SESSION[pr1] . "AND pr_number2 = " . $_SESSION[pr2];
+		else
+			$query6 = "UPDATE purchase SET (pr_rcencode, pr_name, pr_purpose, pr_cluster, pr_office) = ('$pr_rccode', '$pr_name', '$pr_purpose', $pr_cluster, $pr_office) where pr_number1 = " . $_SESSION[pr1] . "AND pr_number2 = " . $_SESSION[pr2];
+		
 		$result6 = pg_query($dbconn, $query6);
 
 		if(!$result6) {

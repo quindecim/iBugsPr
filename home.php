@@ -1,6 +1,6 @@
 <?php
-	require '../php/startsess.php';
-	require '../php/dummy.php';
+	require 'php/startsess.php';
+	// require 'php/dummy.php';
 ?>
 
 <!DOCTYPE html>
@@ -13,15 +13,15 @@
 	
 	<title>iBugs - Purchase Request Generator Tracker</title>
 
-	<link rel="shortcut icon" href="../assets/images/gt_favicon.png">
+	<link rel="shortcut icon" href="assets/images/gt_favicon.png">
 	
 	<link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700">
-	<link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="../assets/css/font-awesome.min.css">
+	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/css/font-awesome.min.css">
 
 	<!-- Custom styles for our template -->
-	<link rel="stylesheet" href="../assets/css/bootstrap-theme.css" media="screen" >
-	<link rel="stylesheet" href="../assets/css/main.css">
+	<link rel="stylesheet" href="assets/css/bootstrap-theme.css" media="screen" >
+	<link rel="stylesheet" href="assets/css/main.css">
 
 	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!--[if lt IE 9]>
@@ -37,7 +37,7 @@
 			<div class="navbar-header">
 				<!-- Button for smallest screens -->
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-				<a class="navbar-brand" href="home.php"><img src="../assets/images/logos.png" alt="Progressus HTML5 template"></a>
+				<a class="navbar-brand" href="home.php"><img src="assets/images/logos.png" alt="Progressus HTML5 template"></a>
 			</div>
 			<?php require 'menu.php'; ?>
 			<!--/.nav-collapse -->
@@ -49,12 +49,15 @@
 	<header id="head">
 		<div class="container">
 			<div class="row">
-				<h1 class="lead">Purchase Request Generator</h1>
+				<h1 class="lead">Purchase Request Generator and Tracker</h1>
 				<p class="tagline">A new way of generating Purchase Request</p>
 				<p>
 				<!-- <a class="btn btn-default btn-lg" role="button">Contact Support</a> -->
-
-				<a class="btn btn-action btn-lg" role="button" href="signin.html">Log In</a></p>
+				<?php 
+					if(!isset($_SESSION['user'])) {
+						echo '<a class="btn btn-action btn-lg" role="button" href="signin.php">Log In</a></p>';
+					}
+				?>
 			</div>
 		</div>
 	</header>
@@ -155,8 +158,8 @@
 	<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-	<script src="../assets/js/headroom.min.js"></script>
-	<script src="../assets/js/jQuery.headroom.min.js"></script>
-	<script src="../assets/js/template.js"></script>
+	<script src="assets/js/headroom.min.js"></script>
+	<script src="assets/js/jQuery.headroom.min.js"></script>
+	<script src="assets/js/template.js"></script>
 </body>
 </html>
