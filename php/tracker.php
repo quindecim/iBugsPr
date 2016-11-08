@@ -1,16 +1,19 @@
 <?php 
 
-	$q = 'SELECT track_office, track_status FROM tracking WHERE track_prnum1 = ' . $_SESSION['pr1'] . ' AND track_prnum2 = ' . $_SESSION['pr2'];
-	$r = pg_query($dbconn, $q);
-	$_SESSION['curr_ofc'] = pg_fetch_result($r, 0, 0);
-	$_SESSION['curr_stat'] = pg_fetch_result($r, 1, 0);
+	function set_track() {
+		$q = 'SELECT * FROM tracking WHERE track_prnum1 = ' . $_SESSION['pr1'] . ' AND track_prnum2 = ' . $_SESSION['pr2'];
+		$r = pg_query($dbconn, $q);
+		$row = pg_fetch_array($r, 0);
+		$_SESSION['curr_ofc'] = $row[1];
+		$_SESSION['curr_stat'] = $row[3];
+	}
 
-	function pr_status($x, $n) {
+	function pr_status($offc_num, $offc_ordr) {
 		$status = 'Pending';
 		$ctr = 0;
 
-		while ($x < 5) {
-			if($n == $_SESSION['curr_ofc'] && $_SESSION['flag']) {
+		while ($offc_ordr < 5) {
+			if($offc_num == $_SESSION['curr_ofc'] && $_SESSION['flag']) {
 				$status = $_SESSION['curr_stat'];
 				$_SESSION['flag'] = False;
 				break;
@@ -20,11 +23,10 @@
 				}else {
 					break;
 				}
-			}
 			$x++;
 		}
 
-		echo $status;
+		echo  $status;
 	}
 
 	function pr_color($n) {

@@ -64,7 +64,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
+					<tr>	<?php set_track(); ?>
 					<td class=<?php pr_color(1); ?> style="text-align: center"> <?php pr_status(10, 1); ?> </td>
 					<td class=<?php pr_color(2); ?> style="text-align: center"> <?php pr_status(11, 2); ?> </td>
 					<td class=<?php pr_color(3); ?> style="text-align: center"> <?php pr_status(12, 3); ?> </td>
@@ -77,7 +77,5 @@
 		</div>
 		<hr>
 		<?php require 'footer.php' ?>
-		<script src="js/jquery-1.11.2.min.js"></script> 
-		<script src="js/bootstrap.min.js"></script>
 	</body>
 </html>

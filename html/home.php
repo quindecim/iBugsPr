@@ -1,5 +1,6 @@
 <?php
 	require '../php/startsess.php';
+	require '../php/dummy.php';
 ?>
 
 <!DOCTYPE html>
