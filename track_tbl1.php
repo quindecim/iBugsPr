@@ -64,27 +64,48 @@
 		<div class="table-responsive">
 			<table class="table">
 				<thead>
-				<tr>
-				<th style="text-align: center">Office Head</th>
-				<th style="text-align: center">Budget Office</th>
-				<th style="text-align: center">Asso. Dean for Admin</th>
-				<th style="text-align: center">Accounting Office</th>
-				<th style="text-align: center">Dean</th>
+				<tr>	
+				<th style="text-align: center; font-size: 17px;">Office Head</th>
+				<th style="text-align: center; font-size: 17px;">Budget Office</th>
+				<th style="text-align: center; font-size: 17px;">Accounting Office</th>
+				<th style="text-align: center; font-size: 17px;">Asso. Dean for Admin</th>
+				<th style="text-align: center; font-size: 17px;">Dean</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-				<td class=<?php pr_color(1); ?> style="text-align: center"> <?php pr_status(10, 1); ?> </td>
-				<td class=<?php pr_color(2); ?> style="text-align: center"> <?php pr_status(20, 2); ?> </td>
-				<td class=<?php pr_color(3); ?> style="text-align: center"> <?php pr_status(21, 3); ?> </td>
-				<td class=<?php pr_color(4); ?> style="text-align: center"> <?php pr_status(22, 4); ?> </td>
-				<td class=<?php pr_color(5); ?> style="text-align: center"> <?php pr_status(23, 5); ?> </td>
+				<td class=<?php pr_color(1); ?> height="50" style="text-align: center; font-size: 20px;"> <?php pr_status(10, 1); ?> </td>
+				<td class=<?php pr_color(2); ?> height="50" style="text-align: center; font-size: 20px;"> <?php pr_status(20, 2); ?> </td>
+				<td class=<?php pr_color(3); ?> height="50" style="text-align: center; font-size: 20px;"> <?php pr_status(21, 3); ?> </td>
+				<td class=<?php pr_color(4); ?> height="50" style="text-align: center; font-size: 20px;"> <?php pr_status(22, 4); ?> </td>
+				<td class=<?php pr_color(5); ?> height="50" style="text-align: center; font-size: 20px;"> <?php pr_status(23, 5); ?> </td>
 				</tr>
 			</tbody>
 			</table>
 		</div>
-
+		<hr>
 	</div>	<!-- /container -->
+
+	<div class="container" align="center">
+			<hr>
+			<div class="row">
+				<div class="center-block" align="center">
+					<?php 
+						if($_SESSION['curr_ofc'] == 1) {
+							echo '<a class="btn btn-success disabled btn-lg" role="button">COMPLETED</a>';
+						}else if($_SESSION['user_ofc'] == $_SESSION['pr_ofc']) {
+							if($_SESSION['curr_stat'] == 'Declined') {
+								if($_SESSION['ch'] == 'r') {
+									echo '<a class="btn btn-default disabled btn-lg" role="button">Received PR</a>';
+								}else {
+									echo '<a class="btn btn-success btn-lg" role="button" href="php/receive.php">Receive PR</a>';
+								}
+							}
+						}
+					?>
+			</div>
+		</div>
+
 
 	<?php require 'footer.php'; ?>
 
