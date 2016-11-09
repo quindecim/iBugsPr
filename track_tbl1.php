@@ -95,7 +95,7 @@
 							echo '<a class="btn btn-success disabled btn-lg" role="button">COMPLETED</a>';
 						}else if($_SESSION['user_ofc'] == $_SESSION['pr_ofc']) {
 							if($_SESSION['curr_stat'] == 'Declined') {
-								if($_SESSION['ch'] == 'r') {
+								if($_SESSION['ch'] == 'rec') {
 									echo '<a class="btn btn-default disabled btn-lg" role="button">Received PR</a>';
 								}else {
 									echo '<a class="btn btn-success btn-lg" role="button" href="php/receive.php">Receive PR</a>';

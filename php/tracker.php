@@ -39,7 +39,8 @@
 			}
 		}
 
-		echo $ord . ' ' . $_SESSION['curr_ord'] . ' ' . $_SESSION['ch'] . ' ' . $_SESSION['curr_ofc'] . ' ' . $_SESSION['flag'];
+		echo $ord . ' ' . $_SESSION['curr_ord'] . ' ' . $_SESSION['ch'] . ' ' . $_SESSION['curr_ofc'] . ' ' . $_SESSION['flag'] . ' ' . $_SESSION['curr_stat'];
+		// echo $status;
 	}
 
 	function pr_color($n) {

@@ -96,10 +96,11 @@
 		<div class="row">
 			<div class="center-block" align="center">
 			<form method="POST" action="php/edit_track.php" style="display: inline-block;">
-				<?php 
+				<?php //1 1 d 0 1 Declined
+					  //1 2   20 Declined
 					if($_SESSION['curr_ofc'] == 1) {
 						echo '<a class="btn btn-success disabled btn-lg" role="button">COMPLETED</a>';
-					}else if(($_SESSION['user_ofc'] == $_SESSION['curr_ofc'] || $_SESSION['curr_ord'] == 1) && $_SESSION['curr_stat'] != 'Declined') {
+					}else if(($_SESSION['user_ofc'] == $_SESSION['curr_ofc'] || $_SESSION['curr_ord'] == 1) && $_SESSION['ch'] != 'ret') {
 
 						if($_SESSION['curr_stat'] == 'Pending') {
 							echo '<input type="submit" value="Receive PR" name="receive" class="btn btn-info btn-md"/>';								
@@ -109,28 +110,30 @@
 									echo '<input type="submit" value="Return to Owner" name="return" class="btn btn-info btn-md"/>';
 								}else if($_SESSION['ch'] == 'a') {
 									echo '<input type="submit" value="Send to Next Office" name="send" class="btn btn-info btn-md"/>';
-								}else if($_SESSION['ch'] == 'ret') {
-									echo '<a class="btn btn-danger disabled btn-lg" role="button">Declined and Returned</a>';
 								}
 							}else {
-								echo '<input type="submit" value="Approve" name="approve" class="btn btn-success btn-md"/>
-								<input type="submit" value="On Hold" name="onhold" class="btn btn-warning btn-md"/>
-								<input type="submit" value="Decline" name="decline" class="btn btn-danger btn-md"/>';
+								if($_SESSION['curr_stat'] != 'Declined') {
+									echo '<input type="submit" value="Approve" name="approve" class="btn btn-success btn-md"/>
+										<input type="submit" value="On Hold" name="onhold" class="btn btn-warning btn-md"/>
+										<input type="submit" value="Decline" name="decline" class="btn btn-danger btn-md"/>';
+								}else {
+									echo '<a class="btn btn-danger disabled btn-lg" role="button">Declined and Returned</a>';
+								}
 							}
 						}
 
 					}else {
 
-						// if($_SESSION['ch'] == 'snd') {
-						// 	echo '<a class="btn btn-success disabled btn-lg" role="button">Approved and Sent</a>';
-						// }
-
-						if($_SESSION['user_ofc'] == $_SESSION['curr_ofc'] && $_SESSION['curr_stat'] == 'Declined') {
+						if($_SESSION['ch'] == 'snd') {
+							echo '<a class="btn btn-success disabled btn-lg" role="button">Approved and Sent</a>';
+						}else if($_SESSION['ch'] == 'ret') {
+							echo '<a class="btn btn-danger disabled btn-lg" role="button">Declined and Returned</a>';
+						}else if($_SESSION['user_ofc'] == $_SESSION['curr_ofc'] && $_SESSION['curr_stat'] == 'Declined') {
 							echo '<a class="btn btn-danger disabled btn-lg" role="button">Declined and Returned</a>';
 						}else if($_SESSION['user_ofc'] < $_SESSION['curr_ofc']) {
 							echo '<a class="btn btn-success disabled btn-lg" role="button">Approved and Sent</a>';
 						}else {
-							echo '<a class="btn btn-danger disabled btn-lg" role="button">DECLINED</a>';
+							echo '<a class="btn btn-info disabled btn-lg" role="button">Receive PR</a>';
 						}
 
 					}

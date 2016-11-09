@@ -1,6 +1,4 @@
-<?php 
-	require 'php/dummy.php';
-?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -64,14 +62,14 @@
 							<p class="text-center text-muted">All accounts was pre-created by the iBUGS team, <a href="signup.html">Contact</a> here if any problem occur during sign in. </p>
 							<hr>
 							
-							<form name="login" action="home.php" method="POST">
+							<form name="login" action="php/login.php" method="POST">
 								<div class="top-margin">
 									<label>Username/Email <span class="text-danger">*</span></label>
-									<input type="text" class="form-control">
+									<input type="text" class="form-control" name="uname">
 								</div>
 								<div class="top-margin">
 									<label>Password <span class="text-danger">*</span></label>
-									<input type="password" class="form-control">
+									<input type="password" class="form-control" name="pass">
 								</div>
 
 								<hr>
